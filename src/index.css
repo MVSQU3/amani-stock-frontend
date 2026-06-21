@@ -1,0 +1,6 @@
+@import "tailwindcss";
+@layer components {
+  .input {
+    @apply w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2.5 text-base outline-none focus:border-amber-500;
+  }
+}
