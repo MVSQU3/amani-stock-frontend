@@ -71,7 +71,7 @@ export default function Register(): React.JSX.Element {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="input w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2.5 text-base outline-none focus:border-amber-500"
-              placeholder="Ex: Jean Dupont"
+              placeholder="Ex: Kouadio Bonin"
             />
           </label>
           <label className="block">
@@ -83,7 +83,7 @@ export default function Register(): React.JSX.Element {
               value={shopName}
               onChange={(e) => setShopName(e.target.value)}
               className="input w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2.5 text-base outline-none focus:border-amber-500"
-              placeholder="Ex: Pharmacie Centrale"
+              placeholder="Ex: Pharmacie du Monde"
             />
           </label>
           <label className="block">
@@ -96,7 +96,7 @@ export default function Register(): React.JSX.Element {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="input w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2.5 text-base outline-none focus:border-amber-500"
-              placeholder="jean@exemple.com"
+              placeholder="bonin@exemple.com"
             />
           </label>
           <label className="block">

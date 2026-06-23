@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { useEffect } from "react";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
@@ -8,6 +9,7 @@ import Alerts from "./components/Alerts";
 import Settings from "./components/Settings";
 import ProtectedLayout from "./utils/ProtectedLayout";
 import Landing from "./components/landing/Landing";
+import { useAuthStore } from "./stores/useAuthStore";
 
 /**
  * Point d'entrée de l'application.
@@ -15,7 +17,15 @@ import Landing from "./components/landing/Landing";
  * - "/login" est public.
  * - Les pages de l'app partagent ProtectedLayout (garde + barre de nav).
  */
+
 export default function App(): React.JSX.Element {
+
+  // const { checkAuth } = useAuthStore();
+
+  // useEffect(() => {
+  //   checkAuth();
+  // }, []);
+
   return (
     <BrowserRouter>
       <Routes>

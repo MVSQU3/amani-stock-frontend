@@ -44,7 +44,7 @@ export default function Alerts(): React.JSX.Element {
             }`}
           >
             <CalendarClock size={16} /> Péremption
-            {expiration.length > 0 && (
+            {expiration.length > 0 && tab !== "expiration" && (
               <span className="ml-1 rounded-full bg-amber-500 px-1.5 text-xs font-semibold text-neutral-950">
                 {expiration.length}
               </span>
@@ -59,7 +59,7 @@ export default function Alerts(): React.JSX.Element {
             }`}
           >
             <PackageX size={16} /> Ruptures
-            {lowStock.length > 0 && (
+            {lowStock.length > 0 && tab !== "low" && (
               <span className="ml-1 rounded-full bg-red-600 px-1.5 text-xs font-semibold text-neutral-100">
                 {lowStock.length}
               </span>
