@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { Loader2, UserPlus } from "lucide-react";
-import { axiosClient } from "../api/axiosClient";
+import { useAuthStore } from "../stores/useAuthStore";
 
 /**
  * Écran d'inscription.
@@ -14,35 +14,26 @@ export default function Register(): React.JSX.Element {
   const [password, setPassword] = useState("");
   const [shopName, setShopName] = useState("");
   
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { register, loading, error, clearError } = useAuthStore();
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const submit = async () => {
     if (!name.trim() || !email.trim() || !password || !shopName.trim()) {
-      setError("Tous les champs sont requis.");
       return;
     }
-    setLoading(true);
-    setError("");
     try {
-      await axiosClient.post("/auth/register", {
-        name: name.trim(),
-        email: email.trim(),
-        password,
-        shopName: shopName.trim(),
-      });
+      await register(name.trim(), email.trim(), password, shopName.trim());
       
       setSuccess(true);
       setTimeout(() => {
         navigate("/login");
       }, 2000);
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message || "Erreur lors de l'inscription. Vérifiez les informations."
-      );
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      // Erreur gérée par le store
     }
   };
 
@@ -119,7 +110,7 @@ export default function Register(): React.JSX.Element {
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && submit()}
               className="input w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2.5 text-base outline-none focus:border-amber-500"
-              placeholder="••••••••"
+              placeholder="8 caractères minimum"
             />
           </label>
           <button

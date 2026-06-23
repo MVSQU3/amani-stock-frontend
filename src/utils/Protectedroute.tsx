@@ -1,5 +1,5 @@
 import { Navigate } from "react-router";
-import { TOKEN_KEY } from "../api/axiosClient";
+import { useAuthStore } from "../stores/useAuthStore";
 
 /**
  * Garde de route : si aucun token n'est présent, on renvoie au login.
@@ -11,7 +11,7 @@ export default function ProtectedRoute({
 }: {
   children: React.JSX.Element;
 }): React.JSX.Element {
-  const token = localStorage.getItem(TOKEN_KEY);
+  const { token } = useAuthStore();
   if (!token) {
     return <Navigate to="/login" replace />;
   }

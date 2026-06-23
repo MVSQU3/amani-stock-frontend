@@ -109,16 +109,12 @@ export interface LossPayload {
   reason?: string;
 }
 
-/** data renvoyée par GET /stock/dashboard. */
-export interface DashboardData {
-  stockValue: number;
-  totalUnits: number;
-  batchCount: number;
-  productCount: number;
-  expiring: { count: number; value: number };
-  expired: { count: number; value: number };
-  lowStockCount: number;
-  soldTodayUnits: number;
-  purchasedTodayUnits: number;
-  warningDays: number;
+
+
+export interface AlertsState {
+  expiration: ExpirationAlert[];
+  lowStock: LowStockItem[];
+  loading: boolean;
+  error: string;
+  loadAlerts: () => Promise<void>;
 }

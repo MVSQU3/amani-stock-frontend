@@ -11,13 +11,12 @@ import {
   AlertTriangle,
   ScanLine,
 } from "lucide-react";
-import { axiosClient } from "../api/axiosClient";
 import type {
   AppMode,
-  ApiResponse,
-  SellResult,
   AddStockPayload,
 } from "../types/stock.interface";
+import Field from "../utils/FieldWrapper";
+import { useScannerStore } from "../stores/useScannerStore";
 
 const READER_ID = "qr-reader";
 
@@ -73,8 +72,9 @@ export default function Scanner(): React.JSX.Element {
   const [isScanning, setIsScanning] = useState(false);
   const [manualMode, setManualMode] = useState(false);
   const [barcode, setBarcode] = useState("");
-  const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<Feedback>(null);
+  
+  const { addStock, sellProduct, loading: submitting } = useScannerStore();
 
   // Champs du formulaire (mode "add")
   const [name, setName] = useState("");
@@ -245,7 +245,6 @@ export default function Scanner(): React.JSX.Element {
       });
       return;
     }
-    setSubmitting(true);
     setFeedback(null);
     try {
       const payload: AddStockPayload = {
@@ -259,23 +258,19 @@ export default function Scanner(): React.JSX.Element {
         sellPrice: sellPrice ? parseFloat(sellPrice) : undefined,
         minThreshold: minThreshold ? parseInt(minThreshold, 10) : undefined,
       };
-      const { data } = await axiosClient.post<ApiResponse<unknown>>(
-        "/stock/add",
-        payload,
-      );
+      
+      const message = await addStock(payload);
+      
       setFeedback({
         type: "success",
-        message: data.message || "Stock ajouté.",
+        message,
       });
       resetAll();
     } catch (err: any) {
       setFeedback({
         type: "error",
-        message:
-          err?.response?.data?.message || "Échec de l'enregistrement du stock.",
+        message: err.message,
       });
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -289,32 +284,23 @@ export default function Scanner(): React.JSX.Element {
       });
       return;
     }
-    setSubmitting(true);
     setFeedback(null);
     try {
-      const { data } = await axiosClient.post<ApiResponse<SellResult>>(
-        "/stock/sell",
-        { barcode, quantity: qty },
-      );
+      const result = await sellProduct(barcode, qty);
       setFeedback({
         type: "success",
-        message:
-          data.message ||
-          `Vente enregistrée. Reste ${data.data.totalRemaining}.`,
-        lowStock: data.data.lowStock,
+        message: result.message,
+        lowStock: result.lowStock,
       });
       resetAll();
     } catch (err: any) {
       setFeedback({
         type: "error",
-        message: err?.response?.data?.message || "Échec de la vente.",
+        message: err.message,
       });
-    } finally {
-      setSubmitting(false);
     }
   };
 
-  const accent = mode === "add" ? "amber" : "amber"; // accent unique partagé
   const hasBarcode = barcode.length > 0;
 
   return (
@@ -579,20 +565,3 @@ export default function Scanner(): React.JSX.Element {
   );
 }
 
-/** Petit wrapper de champ pour garder le JSX lisible. */
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}): React.JSX.Element {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-xs uppercase tracking-wide text-neutral-500">
-        {label}
-      </span>
-      {children}
-    </label>
-  );
-}

@@ -1,12 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
-import Landing from "./components/landing/Landing";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import Scanner from "./components/Scanner";
 import Inventory from "./components/Inventory";
 import Alerts from "./components/Alerts";
+import Settings from "./components/Settings";
 import ProtectedLayout from "./utils/ProtectedLayout";
+import Landing from "./components/landing/Landing";
 
 /**
  * Point d'entrée de l'application.
@@ -29,6 +30,7 @@ export default function App(): React.JSX.Element {
           <Route path="/scan" element={<Scanner />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/alerts" element={<Alerts />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
 
         {/* Inconnu -> accueil */}

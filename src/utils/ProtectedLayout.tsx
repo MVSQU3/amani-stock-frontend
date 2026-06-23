@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router";
-import { TOKEN_KEY } from "../api/axiosClient";
 import BottomNav from "./BottomNav";
+import { useAuthStore } from "../stores/useAuthStore";
 
 /**
  * Layout des pages protégées : vérifie le token, affiche la page courante
@@ -8,7 +8,7 @@ import BottomNav from "./BottomNav";
  * Le padding-bottom évite que le contenu passe sous la barre fixe.
  */
 export default function ProtectedLayout(): React.JSX.Element {
-  const token = localStorage.getItem(TOKEN_KEY);
+  const { token } = useAuthStore();
   if (!token) {
     return <Navigate to="/login" replace />;
   }

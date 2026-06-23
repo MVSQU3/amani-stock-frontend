@@ -7,7 +7,7 @@ import axios from "axios";
  * - une réponse 401 déconnecte l'utilisateur et le renvoie au login
  */
 export const axiosClient = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || "https://9d0g8btp-3000.uks1.devtunnels.ms/api",
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api",
     headers: { "Content-Type": "application/json" },
 });
 

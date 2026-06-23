@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router";
+import { useState, useEffect } from "react";
 import {
   Loader2,
   RefreshCw,
@@ -10,43 +9,25 @@ import {
   CalendarClock,
   TriangleAlert,
   PackageX,
-  ArrowUpRight,
   ShoppingCart,
   Download,
-  Box,
 } from "lucide-react";
-import { axiosClient } from "../api/axiosClient";
-import type { ApiResponse, DashboardData } from "../types/stock.interface";
+import FinanceTab from "./Finance";
+import { MiniStat, AlertTile } from "../utils/DashboardWidgets";
+import { useDashboardStore } from "../stores/useDashboardStore";
 
 // Montants en francs CFA (Afrique de l'Ouest)
 const fcfa = (n: number): string =>
   `${Math.round(n).toLocaleString("fr-FR")} FCFA`;
 
 export default function Dashboard(): React.JSX.Element {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const res =
-        await axiosClient.get<ApiResponse<DashboardData>>("/stock/dashboard");
-      setData(res.data.data);
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message ||
-          "Impossible de charger le tableau de bord.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [mainTab, setMainTab] = useState<"stock" | "finance">("stock");
+  
+  const { data, loading, error, loadDashboard } = useDashboardStore();
 
   useEffect(() => {
-    load();
-  }, [load]);
+    loadDashboard();
+  }, [loadDashboard]);
 
   return (
     <div className="min-h-screen bg-neutral-950 px-4 py-5 text-neutral-100">
@@ -56,7 +37,7 @@ export default function Dashboard(): React.JSX.Element {
             Tableau de bord
           </h1>
           <button
-            onClick={load}
+            onClick={loadDashboard}
             className="rounded-lg bg-neutral-900 p-2 text-neutral-400 hover:text-neutral-200"
             aria-label="Rafraîchir"
           >
@@ -76,152 +57,117 @@ export default function Dashboard(): React.JSX.Element {
           </div>
         ) : (
           <>
-            {/* Valeur du stock — chiffre principal */}
-            <div className="mb-3 rounded-2xl border border-neutral-800 bg-gradient-to-br from-neutral-900 to-neutral-900/40 p-5">
-              <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-neutral-500">
-                <Wallet size={14} /> Valeur du stock
+            {/* 2 Onglets Principaux */}
+            <div className="mb-5 grid grid-cols-2 gap-1 rounded-xl bg-neutral-900 p-1">
+              <button
+                onClick={() => setMainTab("stock")}
+                className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition ${
+                  mainTab === "stock"
+                    ? "bg-neutral-800 text-neutral-100"
+                    : "text-neutral-400 hover:text-neutral-200"
+                }`}
+              >
+                <Boxes size={15} /> Stock
+              </button>
+              <button
+                onClick={() => setMainTab("finance")}
+                className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition ${
+                  mainTab === "finance"
+                    ? "bg-neutral-800 text-neutral-100"
+                    : "text-neutral-400 hover:text-neutral-200"
+                }`}
+              >
+                <Wallet size={15} /> Finance
+              </button>
+            </div>
+
+            {mainTab === "stock" ? (
+              <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                {/* Valeur du stock — chiffre principal */}
+                <div className="mb-3 rounded-2xl border border-neutral-800 bg-gradient-to-br from-neutral-900 to-neutral-900/40 p-5">
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-neutral-500">
+                    <Wallet size={14} /> Valeur du stock
+                  </div>
+                  <div className="mt-1.5 text-3xl font-semibold tracking-tight">
+                    {fcfa(data.stockValue)}
+                  </div>
+                </div>
+
+                {/* Volumes */}
+                <div className="mb-3 grid grid-cols-3 gap-3">
+                  <MiniStat
+                    icon={<Boxes size={15} />}
+                    label="Unités"
+                    value={data.totalUnits}
+                  />
+                  <MiniStat
+                    icon={<Layers size={15} />}
+                    label="Lots"
+                    value={data.batchCount}
+                  />
+                  <MiniStat
+                    icon={<Tag size={15} />}
+                    label="Produits"
+                    value={data.productCount}
+                  />
+                </div>
+
+                {/* À traiter */}
+                <p className="mb-2 mt-5 text-xs uppercase tracking-wide text-neutral-500">
+                  À traiter
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <AlertTile
+                    to="/alerts"
+                    icon={<CalendarClock size={16} />}
+                    tone="amber"
+                    count={data.expiring.count}
+                    label="Périment bientôt"
+                    sub={fcfa(data.expiring.value)}
+                  />
+                  <AlertTile
+                    to="/inventory"
+                    icon={<TriangleAlert size={16} />}
+                    tone="red"
+                    count={data.expired.count}
+                    label="Périmés à sortir"
+                    sub={fcfa(data.expired.value)}
+                  />
+                  <AlertTile
+                    to="/alerts"
+                    icon={<PackageX size={16} />}
+                    tone={data.lowStockCount > 0 ? "red" : "neutral"}
+                    count={data.lowStockCount}
+                    label="Ruptures / stock bas"
+                  />
+                  <AlertTile
+                    to="/scan"
+                    icon={<Download size={16} />}
+                    tone="emerald"
+                    count={data.purchasedTodayUnits}
+                    label="Entrées aujourd'hui"
+                    sub="unités entrées"
+                  />
+                  <AlertTile
+                    to="/scan"
+                    icon={<ShoppingCart size={16} />}
+                    tone="emerald"
+                    count={data.soldTodayUnits}
+                    label="Sorties aujourd'hui"
+                    sub="unités vendues"
+                  />
+                </div>
+
+                <p className="mt-5 text-center text-xs text-neutral-600">
+                  Seuil d'alerte péremption : {data.warningDays} jours
+                </p>
               </div>
-              <div className="mt-1.5 text-3xl font-semibold tracking-tight">
-                {fcfa(data.stockValue)}
-              </div>
-            </div>
-
-            {/* Volumes */}
-            <div className="mb-3 grid grid-cols-3 gap-3">
-              <MiniStat
-                icon={<Boxes size={15} />}
-                label="Unités"
-                value={data.totalUnits}
-              />
-              <MiniStat
-                icon={<Layers size={15} />}
-                label="Lots"
-                value={data.batchCount}
-              />
-              <MiniStat
-                icon={<Tag size={15} />}
-                label="Produits"
-                value={data.productCount}
-              />
-            </div>
-
-            {/* À traiter */}
-            <p className="mb-2 mt-5 text-xs uppercase tracking-wide text-neutral-500">
-              À traiter
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              <AlertTile
-                to="/alerts"
-                icon={<CalendarClock size={16} />}
-                tone="amber"
-                count={data.expiring.count}
-                label="Périment bientôt"
-                sub={fcfa(data.expiring.value)}
-              />
-              <AlertTile
-                to="/inventory"
-                icon={<TriangleAlert size={16} />}
-                tone="red"
-                count={data.expired.count}
-                label="Périmés à sortir"
-                sub={fcfa(data.expired.value)}
-              />
-              <AlertTile
-                to="/alerts"
-                icon={<PackageX size={16} />}
-                tone={data.lowStockCount > 0 ? "red" : "neutral"}
-                count={data.lowStockCount}
-                label="Ruptures / stock bas"
-              />
-              <AlertTile
-                to="/scan"
-                icon={<Download size={16} />}
-                tone="emerald"
-                count={data.purchasedTodayUnits}
-                label="Entrées aujourd'hui"
-                sub="unités entrées"
-              />
-              <AlertTile
-                to="/scan"
-                icon={<ShoppingCart size={16} />}
-                tone="emerald"
-                count={data.soldTodayUnits}
-                label="Sorties aujourd'hui"
-                sub="unités vendues"
-              />
-            </div>
-
-            <p className="mt-5 text-center text-xs text-neutral-600">
-              Seuil d'alerte péremption : {data.warningDays} jours
-            </p>
+            ) : (
+              <FinanceTab />
+            )}
           </>
         )}
       </div>
-    </div>
-  );
-}
-
-function MiniStat({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
-}) {
-  return (
-    <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-3">
-      <div className="flex items-center gap-1.5 text-neutral-500">{icon}</div>
-      <div className="mt-1 text-xl font-semibold">
-        {value.toLocaleString("fr-FR")}
       </div>
-      <div className="text-xs text-neutral-500">{label}</div>
-    </div>
-  );
-}
-
-const TONES: Record<string, { ring: string; text: string }> = {
-  amber: { ring: "border-l-amber-500", text: "text-amber-300" },
-  red: { ring: "border-l-red-600", text: "text-red-300" },
-  emerald: { ring: "border-l-emerald-500", text: "text-emerald-300" },
-  neutral: { ring: "border-l-neutral-600", text: "text-neutral-300" },
-  sky: { ring: "border-l-sky-500", text: "text-sky-300" },
-};
-
-function AlertTile({
-  to,
-  icon,
-  tone,
-  count,
-  label,
-  sub,
-}: {
-  to: string;
-  icon: React.ReactNode;
-  tone: "amber" | "red" | "emerald" | "neutral" | "sky";
-  count: number;
-  label: string;
-  sub?: string;
-}) {
-  const t = TONES[tone];
-  return (
-    <Link
-      to={to}
-      className={`group rounded-xl border border-neutral-800 border-l-4 ${t.ring} bg-neutral-900/60 p-3.5 transition hover:bg-neutral-900`}
-    >
-      <div className="flex items-center justify-between">
-        <span className={t.text}>{icon}</span>
-        <ArrowUpRight
-          size={14}
-          className="text-neutral-600 group-hover:text-neutral-400"
-        />
-      </div>
-      <div className="mt-2 text-2xl font-semibold">
-        {(count ?? 0).toLocaleString("fr-FR")}
-      </div>
-      <div className="text-xs text-neutral-400">{label}</div>
-      {sub && <div className={`mt-0.5 text-xs ${t.text}`}>{sub}</div>}
-    </Link>
   );
 }

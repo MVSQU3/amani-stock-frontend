@@ -1,46 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { Loader2, LogIn } from "lucide-react";
-import { axiosClient, TOKEN_KEY } from "../api/axiosClient";
+import { useAuthStore } from "../stores/useAuthStore";
 
 /**
  * Écran de connexion.
- * Stocke le token dans localStorage (lu automatiquement par axiosClient),
- * puis redirige vers le scanner.
+ * Utilise le store Zustand pour la gestion d'état et d'appel réseau.
  */
 export default function Login(): React.JSX.Element {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  
+  const { login, loading, error, clearError } = useAuthStore();
+
+  useEffect(() => {
+    // Nettoyer l'erreur quand on arrive sur la page
+    clearError();
+  }, [clearError]);
 
   const submit = async () => {
     if (!email.trim() || !password) {
-      setError("Email et mot de passe requis.");
       return;
     }
-    setLoading(true);
-    setError("");
     try {
-      const { data } = await axiosClient.post("/auth/login", {
-        email: email.trim(),
-        password,
-      });
-      const token: string | undefined = data?.token ?? data?.data?.token;
-      if (!token) throw new Error("Token absent de la réponse.");
-      localStorage.setItem(TOKEN_KEY, token);
-      // On mémorise l'utilisateur pour l'affichage (en-tête, etc.)
-      if (data?.data?.user) {
-        localStorage.setItem("amani_user", JSON.stringify(data.data.user));
-      }
+      await login(email.trim(), password);
       navigate("/scan", { replace: true });
-    } catch (err: any) {
-      setError(
-        err?.response?.data?.message || "Connexion impossible. Vérifie tes identifiants.",
-      );
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      // L'erreur est gérée par le store
     }
   };
 

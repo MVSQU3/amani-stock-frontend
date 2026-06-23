@@ -1,7 +1,5 @@
 import { NavLink } from "react-router";
-import { LayoutGrid, ScanLine, Boxes, Bell, LogOut } from "lucide-react";
-import { TOKEN_KEY } from "../api/axiosClient";
-
+import { LayoutGrid, ScanLine, Boxes, Bell, Settings as SettingsIcon } from "lucide-react";
 /**
  * Barre de navigation basse (pattern mobile).
  * Fixe en bas de l'écran, accessible au pouce.
@@ -13,11 +11,6 @@ export default function BottomNav(): React.JSX.Element {
   const inactive = "text-neutral-500 hover:text-neutral-300";
   const cls = ({ isActive }: { isActive: boolean }) =>
     `${base} ${isActive ? active : inactive}`;
-
-  const handleLogout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    window.location.href = "/login";
-  };
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-neutral-800 bg-neutral-900/95 backdrop-blur">
@@ -38,13 +31,10 @@ export default function BottomNav(): React.JSX.Element {
           <Bell size={20} />
           Alertes
         </NavLink>
-        <button
-          onClick={handleLogout}
-          className={`${base} text-red-500/80 hover:text-red-500`}
-        >
-          <LogOut size={20} />
-          Quitter
-        </button>
+        <NavLink to="/settings" className={cls}>
+          <SettingsIcon size={20} />
+          Paramètres
+        </NavLink>
       </div>
     </nav>
   );
