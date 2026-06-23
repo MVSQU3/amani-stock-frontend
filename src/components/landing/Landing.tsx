@@ -1,4 +1,5 @@
 import React, { useState, useEffect, type JSX } from 'react';
+import { useNavigate } from 'react-router';
 
 type Role = 'gerant' | 'gestionnaire' | 'employe';
 
@@ -26,6 +27,7 @@ interface Stage {
 }
 
 const AmaniStockLanding: React.FC = () => {
+  const navigate = useNavigate();
   const [stage, setStage] = useState(0);
   const [role, setRole] = useState<Role>('gerant');
 
@@ -247,6 +249,90 @@ const AmaniStockLanding: React.FC = () => {
         @keyframes amani-shimmer { to { background-position: 220% 0; } }
         @keyframes amani-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         body { margin: 0; }
+
+        .page-container {
+          max-width: 1060px;
+          margin: 0 auto;
+          padding: 0 22px;
+        }
+        .hero-buttons {
+          display: flex;
+          gap: 11px;
+          flex-wrap: wrap;
+        }
+        .features-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 11px;
+        }
+        .heat-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+        .circuit-container {
+          display: block;
+        }
+        .circuit-text {
+          margin-bottom: 20px;
+        }
+        .circuit-scene {
+          margin: 0 auto;
+          width: 100%;
+          max-width: 400px;
+        }
+        
+        @media (min-width: 900px) {
+          section {
+            padding-top: 80px !important;
+            padding-bottom: 80px !important;
+          }
+          .hero-text-container {
+            text-align: center;
+            max-width: 860px;
+            margin: 0 auto;
+          }
+          .hero-text-container h1 {
+            font-size: 68px !important;
+            line-height: 1.02 !important;
+            margin-bottom: 28px !important;
+          }
+          .hero-text-container p {
+            font-size: 19px !important;
+            margin-bottom: 36px !important;
+          }
+          .hero-buttons {
+            justify-content: center;
+          }
+          .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+          }
+          .heat-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+          }
+          .staff-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: start;
+          }
+          .circuit-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+          }
+          .circuit-text {
+            flex: 1;
+            margin-bottom: 0;
+          }
+          .circuit-scene {
+            flex: 1;
+          }
+        }
       `}</style>
 
       {/* ========== HEADER ========== */}
@@ -255,125 +341,130 @@ const AmaniStockLanding: React.FC = () => {
           position: 'sticky',
           top: 0,
           zIndex: 30,
-          padding: '46px 18px 11px',
           background: 'linear-gradient(180deg,rgba(10,10,11,.96),rgba(10,10,11,.78))',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
           borderBottom: '1px solid rgba(42,42,48,.55)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-          <span
-            style={{
-              width: '24px',
-              height: '24px',
-              borderRadius: '7px',
-              background: 'linear-gradient(135deg,#f5a524,#f97316 55%,#e5484d)',
-              boxShadow: 'inset 0 0 0 1px rgba(255,255,255,.12)',
-            }}
-          />
-          <span
-            style={{
-              fontFamily: "'Bricolage Grotesque', sans-serif",
-              fontWeight: 800,
-              fontSize: '17px',
-              letterSpacing: '-.02em',
-            }}
-          >
-            Amani&nbsp;Stock
-          </span>
-        </div>
-        <span
-          style={{
-            fontSize: '13px',
-            fontWeight: 600,
-            color: '#1a1200',
-            background: '#f5a524',
-            padding: '8px 14px',
-            borderRadius: '10px',
-          }}
-        >
-          S'inscrire
-        </span>
-      </header>
-
-      {/* ========== HERO ========== */}
-      <section style={{ padding: '30px 22px 8px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', fontSize: '11px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#9b9ba3', fontWeight: 600, marginBottom: '18px' }}>
-          <span style={{ width: '24px', height: '3px', borderRadius: '3px', background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)' }} />
-          Stock périssable, zéro angle mort
-        </div>
-        <h1
-          style={{
-            fontFamily: "'Bricolage Grotesque', sans-serif",
-            fontWeight: 800,
-            fontSize: '34px',
-            lineHeight: 1.07,
-            letterSpacing: '-.03em',
-            margin: '0 0 15px',
-          }}
-        >
-          Tout votre stock,<br />
-          du carton au{' '}
-          <span
-            style={{
-              background: 'linear-gradient(90deg,#f5a524,#f97316 60%,#e5484d)',
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              color: 'transparent',
-            }}
-          >
-            comptoir
-          </span>
-          .
-        </h1>
-        <p style={{ fontSize: '15.5px', color: '#9b9ba3', margin: '0 0 22px' }}>
-          On scanne l'arrivage, on vend en{' '}
-          <strong style={{ color: '#f4f3f1', fontWeight: 600 }}>FEFO strict</strong>, on alerte avant la péremption — et
-          désormais chaque membre de l'équipe a juste les accès qu'il lui faut.
-        </p>
-        <div style={{ display: 'flex', gap: '11px', flexWrap: 'wrap' }}>
+        <div className="page-container" style={{ padding: '18px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+            <span
+              style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '7px',
+                background: 'linear-gradient(135deg,#f5a524,#f97316 55%,#e5484d)',
+                boxShadow: 'inset 0 0 0 1px rgba(255,255,255,.12)',
+              }}
+            />
+            <span
+              style={{
+                fontFamily: "'Bricolage Grotesque', sans-serif",
+                fontWeight: 800,
+                fontSize: '17px',
+                letterSpacing: '-.02em',
+              }}
+            >
+              Amani&nbsp;Stock
+            </span>
+          </div>
           <button
+            onClick={() => navigate('/register')}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '7px',
-              fontSize: '14px',
+              fontSize: '13px',
               fontWeight: 600,
               color: '#1a1200',
               background: '#f5a524',
-              padding: '13px 20px',
-              borderRadius: '12px',
+              padding: '8px 14px',
+              borderRadius: '10px',
               border: 'none',
               cursor: 'pointer',
             }}
           >
-            Créer ma boutique
-          </button>
-          <button
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '7px',
-              fontSize: '14px',
-              fontWeight: 600,
-              color: '#f4f3f1',
-              border: '1px solid #2a2a30',
-              padding: '13px 18px',
-              borderRadius: '12px',
-              background: 'transparent',
-              cursor: 'pointer',
-            }}
-          >
-            Voir le circuit
+            S'inscrire
           </button>
         </div>
-        <div style={{ marginTop: '18px', fontSize: '12.5px', color: '#9b9ba3', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 11px #10b981' }} />
-          Pensé pour le mobile — utilisable d'une main, derrière le comptoir.
+      </header>
+
+      {/* ========== HERO ========== */}
+      <section style={{ padding: '30px 0 8px' }}>
+        <div className="page-container hero-text-container">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', fontSize: '11px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#9b9ba3', fontWeight: 600, marginBottom: '18px' }}>
+            <span style={{ width: '24px', height: '3px', borderRadius: '3px', background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)' }} />
+            Stock périssable, zéro angle mort
+          </div>
+          <h1
+            style={{
+              fontFamily: "'Bricolage Grotesque', sans-serif",
+              fontWeight: 800,
+              fontSize: '34px',
+              lineHeight: 1.07,
+              letterSpacing: '-.03em',
+              margin: '0 0 15px',
+            }}
+          >
+            Tout votre stock,<br />
+            du carton au{' '}
+            <span
+              style={{
+                background: 'linear-gradient(90deg,#f5a524,#f97316 60%,#e5484d)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              comptoir
+            </span>
+            .
+          </h1>
+          <p style={{ fontSize: '15.5px', color: '#9b9ba3', margin: '0 0 22px' }}>
+            On scanne l'arrivage, on vend en{' '}
+            <strong style={{ color: '#f4f3f1', fontWeight: 600 }}>FEFO strict</strong>, on alerte avant la péremption — et
+            désormais chaque membre de l'équipe a juste les accès qu'il lui faut.
+          </p>
+          <div className="hero-buttons">
+            <button
+              onClick={() => navigate('/register')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '7px',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#1a1200',
+                background: '#f5a524',
+                padding: '13px 20px',
+                borderRadius: '12px',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              Créer ma boutique
+            </button>
+            <button
+              onClick={() => document.getElementById('circuit')?.scrollIntoView({ behavior: 'smooth' })}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '7px',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#f4f3f1',
+                border: '1px solid #2a2a30',
+                padding: '13px 18px',
+                borderRadius: '12px',
+                background: 'transparent',
+                cursor: 'pointer',
+              }}
+            >
+              Voir le circuit
+            </button>
+          </div>
+          <div style={{ marginTop: '18px', fontSize: '12.5px', color: '#9b9ba3', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 11px #10b981' }} />
+            Pensé pour le mobile — utilisable d'une main, derrière le comptoir.
+          </div>
         </div>
       </section>
 
@@ -390,28 +481,32 @@ const AmaniStockLanding: React.FC = () => {
       />
 
       {/* ========== 3D STOCK CIRCUIT ========== */}
-      <section style={{ padding: '36px 22px 40px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', fontSize: '11px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#9b9ba3', fontWeight: 600, marginBottom: '14px' }}>
-          <span style={{ width: '24px', height: '3px', borderRadius: '3px', background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)' }} />
-          En 3D, le circuit complet
-        </div>
-        <h2
-          style={{
-            fontFamily: "'Bricolage Grotesque', sans-serif",
-            fontWeight: 700,
-            fontSize: '27px',
-            lineHeight: 1.08,
-            letterSpacing: '-.02em',
-            margin: '0 0 6px',
-          }}
-        >
-          Un produit, du quai à la vente.
-        </h2>
-        <p style={{ fontSize: '14px', color: '#9b9ba3', margin: '0 0 8px' }}>
-          Chaque lot suit le même circuit. Suivez la caisse qui tourne, ou touchez une étape.
-        </p>
+      <section id="circuit" style={{ padding: '36px 0 40px' }}>
+        <div className="page-container circuit-container">
+          <div className="circuit-text">
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', fontSize: '11px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#9b9ba3', fontWeight: 600, marginBottom: '14px' }}>
+              <span style={{ width: '24px', height: '3px', borderRadius: '3px', background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)' }} />
+              En 3D, le circuit complet
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Bricolage Grotesque', sans-serif",
+                fontWeight: 700,
+                fontSize: '27px',
+                lineHeight: 1.08,
+                letterSpacing: '-.02em',
+                margin: '0 0 6px',
+              }}
+            >
+              Un produit, du quai à la vente.
+            </h2>
+            <p style={{ fontSize: '14px', color: '#9b9ba3', margin: '0 0 8px' }}>
+              Chaque lot suit le même circuit. Suivez la caisse qui tourne, ou touchez une étape.
+            </p>
+          </div>
 
-        {/* 3D Scene */}
+          <div className="circuit-scene">
+            {/* 3D Scene */}
         <div
           style={{
             position: 'relative',
@@ -740,62 +835,66 @@ const AmaniStockLanding: React.FC = () => {
             {active.statLabel}
           </div>
         </div>
+          </div>
+        </div>
       </section>
 
       {/* ========== STAFF MANAGEMENT ========== */}
       <section
         style={{
-          padding: '38px 22px 40px',
+          padding: '38px 0 40px',
           background: '#141417',
           borderTop: '1px solid #21212600',
           borderBottom: '1px solid #21212600',
         }}
       >
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', marginBottom: '14px' }}>
-          <span
-            style={{
-              fontSize: '10px',
-              letterSpacing: '.12em',
-              textTransform: 'uppercase',
-              fontWeight: 700,
-              color: '#1a1200',
-              background: '#f5a524',
-              padding: '3px 8px',
-              borderRadius: '6px',
-            }}
-          >
-            Nouveau
-          </span>
-          <span
-            style={{
-              fontSize: '11px',
-              letterSpacing: '.14em',
-              textTransform: 'uppercase',
-              color: '#9b9ba3',
-              fontWeight: 600,
-            }}
-          >
-            Gestion du personnel
-          </span>
-        </div>
-        <h2
-          style={{
-            fontFamily: "'Bricolage Grotesque', sans-serif",
-            fontWeight: 700,
-            fontSize: '27px',
-            lineHeight: 1.08,
-            letterSpacing: '-.02em',
-            margin: '0 0 6px',
-          }}
-        >
-          Votre équipe, chacun à sa place.
-        </h2>
-        <p style={{ fontSize: '14px', color: '#9b9ba3', margin: '0 0 18px' }}>
-          Le gérant possède la boutique et gère la facturation. Il en confie la gestion au gestionnaire, qui pilote
-          l'équipe et les chiffres. L'employé, lui, scanne et vend. Choisissez un rôle :
-        </p>
+        <div className="page-container staff-grid">
+          <div className="staff-left">
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', marginBottom: '14px' }}>
+              <span
+                style={{
+                  fontSize: '10px',
+                  letterSpacing: '.12em',
+                  textTransform: 'uppercase',
+                  fontWeight: 700,
+                  color: '#1a1200',
+                  background: '#f5a524',
+                  padding: '3px 8px',
+                  borderRadius: '6px',
+                }}
+              >
+                Nouveau
+              </span>
+              <span
+                style={{
+                  fontSize: '11px',
+                  letterSpacing: '.14em',
+                  textTransform: 'uppercase',
+                  color: '#9b9ba3',
+                  fontWeight: 600,
+                }}
+              >
+                Gestion du personnel
+              </span>
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Bricolage Grotesque', sans-serif",
+                fontWeight: 700,
+                fontSize: '27px',
+                lineHeight: 1.08,
+                letterSpacing: '-.02em',
+                margin: '0 0 6px',
+              }}
+            >
+              Votre équipe, chacun à sa place.
+            </h2>
+            <p style={{ fontSize: '14px', color: '#9b9ba3', margin: '0 0 18px' }}>
+              Le gérant possède la boutique et gère la facturation. Il en confie la gestion au gestionnaire, qui pilote
+              l'équipe et les chiffres. L'employé, lui, scanne et vend. Choisissez un rôle :
+            </p>
 
-        {/* role toggle */}
+            {/* role toggle */}
         <div style={{ display: 'flex', gap: '5px', background: '#0e0e11', border: '1px solid #2a2a30', borderRadius: '13px', padding: '5px', marginBottom: '14px' }}>
           {(['gerant', 'gestionnaire', 'employe'] as Role[]).map((r) => (
             <button
@@ -975,46 +1074,49 @@ const AmaniStockLanding: React.FC = () => {
             ))}
           </div>
         </div>
+          </div>
+        </div>
       </section>
 
       {/* ========== FEATURES ========== */}
-      <section style={{ padding: '38px 22px 36px' }}>
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '9px',
-            fontSize: '11px',
-            letterSpacing: '.14em',
-            textTransform: 'uppercase',
-            color: '#9b9ba3',
-            fontWeight: 600,
-            marginBottom: '14px',
-          }}
-        >
-          <span
+      <section style={{ padding: '38px 0 36px' }}>
+        <div className="page-container">
+          <div
             style={{
-              width: '24px',
-              height: '3px',
-              borderRadius: '3px',
-              background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '9px',
+              fontSize: '11px',
+              letterSpacing: '.14em',
+              textTransform: 'uppercase',
+              color: '#9b9ba3',
+              fontWeight: 600,
+              marginBottom: '14px',
             }}
-          />
-          Ce que fait Amani Stock
-        </div>
-        <h2
-          style={{
-            fontFamily: "'Bricolage Grotesque', sans-serif",
-            fontWeight: 700,
-            fontSize: '27px',
-            lineHeight: 1.08,
-            letterSpacing: '-.02em',
-            margin: '0 0 18px',
-          }}
-        >
-          Tout le cycle, rien de superflu.
-        </h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '11px' }}>
+          >
+            <span
+              style={{
+                width: '24px',
+                height: '3px',
+                borderRadius: '3px',
+                background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)',
+              }}
+            />
+            Ce que fait Amani Stock
+          </div>
+          <h2
+            style={{
+              fontFamily: "'Bricolage Grotesque', sans-serif",
+              fontWeight: 700,
+              fontSize: '27px',
+              lineHeight: 1.08,
+              letterSpacing: '-.02em',
+              margin: '0 0 18px',
+            }}
+          >
+            Tout le cycle, rien de superflu.
+          </h2>
+          <div className="features-grid">
           {[
             {
               title: 'Scan entrée & sortie',
@@ -1074,47 +1176,49 @@ const AmaniStockLanding: React.FC = () => {
               <p style={{ fontSize: '13.5px', color: '#9b9ba3', margin: 0 }}>{feat.desc}</p>
             </div>
           ))}
+          </div>
         </div>
       </section>
 
       {/* ========== HEAT SCALE ========== */}
-      <section style={{ padding: '34px 22px 38px', background: '#141417' }}>
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '9px',
-            fontSize: '11px',
-            letterSpacing: '.14em',
-            textTransform: 'uppercase',
-            color: '#9b9ba3',
-            fontWeight: 600,
-            marginBottom: '13px',
-          }}
-        >
-          <span
+      <section style={{ padding: '34px 0 38px', background: '#141417' }}>
+        <div className="page-container">
+          <div
             style={{
-              width: '24px',
-              height: '3px',
-              borderRadius: '3px',
-              background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '9px',
+              fontSize: '11px',
+              letterSpacing: '.14em',
+              textTransform: 'uppercase',
+              color: '#9b9ba3',
+              fontWeight: 600,
+              marginBottom: '13px',
             }}
-          />
-          Lisible d'un coup d'œil
-        </div>
-        <h2
-          style={{
-            fontFamily: "'Bricolage Grotesque', sans-serif",
-            fontWeight: 700,
-            fontSize: '24px',
-            lineHeight: 1.1,
-            letterSpacing: '-.02em',
-            margin: '0 0 16px',
-          }}
-        >
-          Une couleur, une décision.
-        </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+          >
+            <span
+              style={{
+                width: '24px',
+                height: '3px',
+                borderRadius: '3px',
+                background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)',
+              }}
+            />
+            Lisible d'un coup d'œil
+          </div>
+          <h2
+            style={{
+              fontFamily: "'Bricolage Grotesque', sans-serif",
+              fontWeight: 700,
+              fontSize: '24px',
+              lineHeight: 1.1,
+              letterSpacing: '-.02em',
+              margin: '0 0 16px',
+            }}
+          >
+            Une couleur, une décision.
+          </h2>
+          <div className="heat-grid">
           {[
             { color: '#10b981', label: 'Sain', desc: 'Stock confortable, péremption lointaine.' },
             { color: '#f5a524', label: 'Bientôt', desc: 'Entre dans la fenêtre d\'alerte. À écouler.' },
@@ -1134,101 +1238,104 @@ const AmaniStockLanding: React.FC = () => {
               <div style={{ fontSize: '12px', color: '#9b9ba3' }}>{scale.desc}</div>
             </div>
           ))}
+          </div>
         </div>
       </section>
 
       {/* ========== CTA ========== */}
-      <section style={{ padding: '46px 22px 44px', textAlign: 'center' }}>
-        <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '12px',
-            color: '#34d399',
-            border: '1px solid rgba(16,185,129,.4)',
-            padding: '6px 13px',
-            borderRadius: '20px',
-            marginBottom: '20px',
-          }}
-        >
+      <section style={{ padding: '46px 0 44px', textAlign: 'center' }}>
+        <div className="page-container" style={{ maxWidth: '600px' }}>
           <span
             style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: '#10b981',
-              boxShadow: '0 0 9px #10b981',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '12px',
+              color: '#34d399',
+              border: '1px solid rgba(16,185,129,.4)',
+              padding: '6px 13px',
+              borderRadius: '20px',
+              marginBottom: '20px',
             }}
-          />
-          Tout existe et fonctionne déjà
-        </span>
-        <h2
-          style={{
-            fontFamily: "'Bricolage Grotesque', sans-serif",
-            fontWeight: 700,
-            fontSize: '28px',
-            lineHeight: 1.08,
-            letterSpacing: '-.02em',
-            margin: '0 0 12px',
-          }}
-        >
-          Cherchons nos premiers commerces pilotes.
-        </h2>
-        <p style={{ fontSize: '14.5px', color: '#9b9ba3', margin: '0 0 24px' }}>
-          Pharmacie ou épicerie en Afrique de l'Ouest qui perd de l'argent en produits périmés ? Testez Amani Stock
-          sur votre vrai stock.
-        </p>
-        <button
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '15px',
-            fontWeight: 600,
-            color: '#1a1200',
-            background: '#f5a524',
-            padding: '14px 26px',
-            borderRadius: '13px',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          Créer ma boutique
-        </button>
+          >
+            <span
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: '#10b981',
+                boxShadow: '0 0 9px #10b981',
+              }}
+            />
+            Tout existe et fonctionne déjà
+          </span>
+          <h2
+            style={{
+              fontFamily: "'Bricolage Grotesque', sans-serif",
+              fontWeight: 700,
+              fontSize: '28px',
+              lineHeight: 1.08,
+              letterSpacing: '-.02em',
+              margin: '0 0 12px',
+            }}
+          >
+            Cherchons nos premiers commerces pilotes.
+          </h2>
+          <p style={{ fontSize: '14.5px', color: '#9b9ba3', margin: '0 0 24px' }}>
+            Pharmacie ou épicerie en Afrique de l'Ouest qui perd de l'argent en produits périmés ? Testez Amani Stock
+            sur votre vrai stock.
+          </p>
+          <button
+            onClick={() => navigate('/register')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '15px',
+              fontWeight: 600,
+              color: '#1a1200',
+              background: '#f5a524',
+              padding: '14px 26px',
+              borderRadius: '13px',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Créer ma boutique
+          </button>
+        </div>
       </section>
 
       {/* ========== FOOTER ========== */}
       <footer
         style={{
           borderTop: '1px solid #2a2a30',
-          padding: '24px 22px 40px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px',
+          padding: '24px 0 40px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-          <span
-            style={{
-              width: '22px',
-              height: '22px',
-              borderRadius: '6px',
-              background: 'linear-gradient(135deg,#f5a524,#f97316 55%,#e5484d)',
-            }}
-          />
-          <span
-            style={{
-              fontFamily: "'Bricolage Grotesque', sans-serif",
-              fontWeight: 800,
-              fontSize: '15px',
-            }}
-          >
-            Amani Stock
-          </span>
-        </div>
-        <div style={{ fontSize: '12.5px', color: '#6f6f78' }}>
-          Gestion de stock pour produits périssables · Afrique de l'Ouest
+        <div className="page-container" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+            <span
+              style={{
+                width: '22px',
+                height: '22px',
+                borderRadius: '6px',
+                background: 'linear-gradient(135deg,#f5a524,#f97316 55%,#e5484d)',
+              }}
+            />
+            <span
+              style={{
+                fontFamily: "'Bricolage Grotesque', sans-serif",
+                fontWeight: 800,
+                fontSize: '15px',
+              }}
+            >
+              Amani Stock
+            </span>
+          </div>
+          <div style={{ fontSize: '12.5px', color: '#6f6f78' }}>
+            Gestion de stock pour produits périssables · Afrique de l'Ouest
+          </div>
         </div>
       </footer>
     </div>
