@@ -1415,15 +1415,6 @@ const AmaniStockLanding: React.FC = () => {
                 padding: '18px',
               }}
             >
-              <div
-                key={i}
-                style={{
-                  background: "#141417",
-                  border: "1px solid #2a2a30",
-                  borderRadius: "16px",
-                  padding: "18px",
-                }}
-              >
                 <div
                   style={{
                     width: "40px",
