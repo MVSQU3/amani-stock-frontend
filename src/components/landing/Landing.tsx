@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type JSX } from 'react';
+import React, { useState, useEffect, useRef, type JSX } from 'react';
 import { useNavigate } from 'react-router';
 
 type Role = 'gerant' | 'gestionnaire' | 'employe';
@@ -30,6 +30,29 @@ const AmaniStockLanding: React.FC = () => {
   const navigate = useNavigate();
   const [stage, setStage] = useState(0);
   const [role, setRole] = useState<Role>('gerant');
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // Scroll reveal
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('revealed');
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
+    );
+    root.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el, i) => {
+      el.style.transitionDelay = `${Math.min(i % 5, 4) * 80}ms`;
+      io.observe(el);
+    });
+    return () => io.disconnect();
+  }, []);
 
   // Auto-rotate 3D circuit every 2.6s
   useEffect(() => {
@@ -229,6 +252,7 @@ const AmaniStockLanding: React.FC = () => {
 
   return (
     <div
+      ref={rootRef}
       style={{
         minHeight: '100vh',
         background: '#0a0a0b',
@@ -248,6 +272,43 @@ const AmaniStockLanding: React.FC = () => {
         @keyframes amani-dash { to { stroke-dashoffset: -64; } }
         @keyframes amani-shimmer { to { background-position: 220% 0; } }
         @keyframes amani-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        [data-reveal] {
+          opacity: 0;
+          transform: translateY(28px);
+          transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+        }
+        [data-reveal].revealed {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        [data-reveal="left"] {
+          opacity: 0;
+          transform: translateX(-32px);
+        }
+        [data-reveal="left"].revealed {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        [data-reveal="right"] {
+          opacity: 0;
+          transform: translateX(32px);
+        }
+        [data-reveal="right"].revealed {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        [data-reveal="scale"] {
+          opacity: 0;
+          transform: scale(.92);
+        }
+        [data-reveal="scale"].revealed {
+          opacity: 1;
+          transform: scale(1);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+        }
         body { margin: 0; }
 
         .page-container {
@@ -390,11 +451,12 @@ const AmaniStockLanding: React.FC = () => {
       {/* ========== HERO ========== */}
       <section style={{ padding: '30px 0 8px' }}>
         <div className="page-container hero-text-container">
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', fontSize: '11px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#9b9ba3', fontWeight: 600, marginBottom: '18px' }}>
+          <div data-reveal="" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', fontSize: '11px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#9b9ba3', fontWeight: 600, marginBottom: '18px' }}>
             <span style={{ width: '24px', height: '3px', borderRadius: '3px', background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)' }} />
             Stock périssable, zéro angle mort
           </div>
           <h1
+            data-reveal=""
             style={{
               fontFamily: "'Bricolage Grotesque', sans-serif",
               fontWeight: 800,
@@ -418,12 +480,12 @@ const AmaniStockLanding: React.FC = () => {
             </span>
             .
           </h1>
-          <p style={{ fontSize: '15.5px', color: '#9b9ba3', margin: '0 0 22px' }}>
+          <p data-reveal="" style={{ fontSize: '15.5px', color: '#9b9ba3', margin: '0 0 22px' }}>
             On scanne l'arrivage, on vend en{' '}
             <strong style={{ color: '#f4f3f1', fontWeight: 600 }}>FEFO strict</strong>, on alerte avant la péremption — et
             désormais chaque membre de l'équipe a juste les accès qu'il lui faut.
           </p>
-          <div className="hero-buttons">
+          <div data-reveal="" className="hero-buttons">
             <button
               onClick={() => navigate('/register')}
               style={{
@@ -483,7 +545,7 @@ const AmaniStockLanding: React.FC = () => {
       {/* ========== 3D STOCK CIRCUIT ========== */}
       <section id="circuit" style={{ padding: '36px 0 40px' }}>
         <div className="page-container circuit-container">
-          <div className="circuit-text">
+          <div data-reveal="left" className="circuit-text">
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', fontSize: '11px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#9b9ba3', fontWeight: 600, marginBottom: '14px' }}>
               <span style={{ width: '24px', height: '3px', borderRadius: '3px', background: 'linear-gradient(90deg,#f5a524,#f97316 55%,#e5484d)' }} />
               En 3D, le circuit complet
@@ -505,7 +567,7 @@ const AmaniStockLanding: React.FC = () => {
             </p>
           </div>
 
-          <div className="circuit-scene">
+          <div data-reveal="right" className="circuit-scene">
             {/* 3D Scene */}
         <div
           style={{
@@ -889,7 +951,7 @@ const AmaniStockLanding: React.FC = () => {
             >
               Votre équipe, chacun à sa place.
             </h2>
-            <p style={{ fontSize: '14px', color: '#9b9ba3', margin: '0 0 18px' }}>
+            <p data-reveal="" style={{ fontSize: '14px', color: '#9b9ba3', margin: '0 0 18px' }}>
               Le gérant possède la boutique et gère la facturation. Il en confie la gestion au gestionnaire, qui pilote
               l'équipe et les chiffres. L'employé, lui, scanne et vend. Choisissez un rôle :
             </p>
@@ -1116,7 +1178,7 @@ const AmaniStockLanding: React.FC = () => {
           >
             Tout le cycle, rien de superflu.
           </h2>
-          <div className="features-grid">
+          <div data-reveal="" className="features-grid">
           {[
             {
               title: 'Scan entrée & sortie',
@@ -1218,7 +1280,7 @@ const AmaniStockLanding: React.FC = () => {
           >
             Une couleur, une décision.
           </h2>
-          <div className="heat-grid">
+          <div data-reveal="" className="heat-grid">
           {[
             { color: '#10b981', label: 'Sain', desc: 'Stock confortable, péremption lointaine.' },
             { color: '#f5a524', label: 'Bientôt', desc: 'Entre dans la fenêtre d\'alerte. À écouler.' },
@@ -1244,7 +1306,7 @@ const AmaniStockLanding: React.FC = () => {
 
       {/* ========== CTA ========== */}
       <section style={{ padding: '46px 0 44px', textAlign: 'center' }}>
-        <div className="page-container" style={{ maxWidth: '600px' }}>
+        <div data-reveal="scale" className="page-container" style={{ maxWidth: '600px' }}>
           <span
             style={{
               display: 'inline-flex',
