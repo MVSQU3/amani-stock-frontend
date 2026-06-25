@@ -15,6 +15,7 @@ import Landing from "./components/landing/Landing";
  * - "/login" est public.
  * - Les pages de l'app partagent ProtectedLayout (garde + barre de nav).
  */
+
 export default function App(): React.JSX.Element {
   return (
     <BrowserRouter>

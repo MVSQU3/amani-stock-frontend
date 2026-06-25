@@ -18,12 +18,12 @@ export const useAuthStore = create<AuthState>((set) => {
         const { data } = await axiosClient.post("/auth/login", { email, password });
         const token = data?.token ?? data?.data?.token;
         const user = data?.data?.user;
-        
+
         if (!token) throw new Error("Token absent de la réponse.");
-        
+
         localStorage.setItem(TOKEN_KEY, token);
         if (user) localStorage.setItem("amani_user", JSON.stringify(user));
-        
+
         set({ user, token, loading: false });
       } catch (err: any) {
         set({
@@ -57,7 +57,7 @@ export const useAuthStore = create<AuthState>((set) => {
         window.location.href = "/login";
       }
     },
-    
+
     clearError: () => set({ error: null })
   };
 });

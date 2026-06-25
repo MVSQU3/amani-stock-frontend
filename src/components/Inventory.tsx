@@ -98,6 +98,14 @@ export default function Inventory(): React.JSX.Element {
         : "text-neutral-400 hover:text-neutral-200"
     }`;
 
+  const todayStr = new Date().toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const entreesTodayCount = entrees.filter((m) => m.dateLabel === todayStr).length;
+  const sortiesTodayCount = sorties.filter((m) => m.dateLabel === todayStr).length;
+
   return (
     <div className="min-h-screen bg-neutral-950 px-4 py-5 text-neutral-100">
       <div className="mx-auto w-full max-w-md">
@@ -153,9 +161,9 @@ export default function Inventory(): React.JSX.Element {
             className={tabCls("entrees")}
           >
             <ArrowDownToLine size={15} /> Entrées
-            {entrees.length > 0 && tab !== "entrees" && (
+            {entreesTodayCount > 0 && tab !== "entrees" && (
               <span className="ml-1 rounded-full bg-emerald-600 px-1.5 text-xs font-semibold text-white">
-                {entrees.length}
+                {entreesTodayCount}
               </span>
             )}
           </button>
@@ -164,9 +172,9 @@ export default function Inventory(): React.JSX.Element {
             className={tabCls("sorties")}
           >
             <ShoppingCart size={15} /> Sorties
-            {sorties.length > 0 && tab !== "sorties" && (
+            {sortiesTodayCount > 0 && tab !== "sorties" && (
               <span className="ml-1 rounded-full bg-amber-500 px-1.5 text-xs font-semibold text-neutral-950">
-                {sorties.length}
+                {sortiesTodayCount}
               </span>
             )}
           </button>

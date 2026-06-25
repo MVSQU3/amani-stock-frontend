@@ -22,7 +22,7 @@ export const dotColor = (d: number): string =>
       ? "bg-orange-500"
       : d <= 30
         ? "bg-amber-500"
-        : "bg-neutral-600";
+        : "bg-green-600";
 
 export const expiryHint = (d: number): string =>
   d < 0 ? `périmé (${Math.abs(d)} j)` : `J-${d}`;
@@ -223,7 +223,6 @@ export function EditForm({
   );
 }
 
-// =========================================================================
 export function StockList({
   items,
   openLossId,

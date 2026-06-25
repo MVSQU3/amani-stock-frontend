@@ -16,4 +16,5 @@ export interface AuthState {
   register: (name: string, email: string, password: string, shopName: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
+  // checkAuth: () => Promise<void>;
 }
