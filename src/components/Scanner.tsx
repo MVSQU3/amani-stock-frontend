@@ -155,7 +155,7 @@ export default function Scanner(): React.JSX.Element {
         /* énumération impossible : on s'appuiera sur facingMode */
       }
       attempts.push({ facingMode: { ideal: "environment" } });
-      attempts.push({ facingMode: "environment" });
+      // attempts.push({ facingMode: "environment" });
 
       const config = { fps: 10, qrbox: { width: 260, height: 160 } };
       let started = false;
