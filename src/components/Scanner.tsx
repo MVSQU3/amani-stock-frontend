@@ -473,11 +473,21 @@ export default function Scanner(): React.JSX.Element {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Unité">
-                    <input
+                    <select
                       value={unit}
                       onChange={(e) => setUnit(e.target.value)}
                       className="input"
-                    />
+                    >
+                      <option value="pièce">Pièce</option>
+                      <option value="boîte">Boîte</option>
+                      <option value="plaquette">Plaquette</option>
+                      <option value="flacon">Flacon</option>
+                      <option value="tube">Tube</option>
+                      <option value="sachet">Sachet</option>
+                      <option value="carton">Carton</option>
+                      <option value="pack">Pack</option>
+                      <option value="pallette">Pallette</option>
+                    </select>
                   </Field>
                   <Field label="Seuil d'alerte">
                     <input
