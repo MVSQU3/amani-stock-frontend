@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useAuthStore } from "../stores/useAuthStore";
 import { useSettingsStore } from "../stores/useSettingsStore";
 
-import { Users, Store, LogOut, Plus, Shield, User, Trash2 } from "lucide-react";
+import { Link } from "react-router";
+import { Users, Store, LogOut, Plus, Shield, User, Trash2, HelpCircle, ChevronRight } from "lucide-react";
 
 export default function Settings(): React.JSX.Element {
   const { logout } = useAuthStore();
@@ -202,6 +203,25 @@ export default function Settings(): React.JSX.Element {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Guide & Aide */}
+      <section className="mb-8">
+        <Link 
+          to="/guide"
+          className="flex w-full items-center justify-between rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 transition hover:bg-neutral-800"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
+              <HelpCircle size={20} />
+            </div>
+            <div className="text-left">
+              <h2 className="text-lg font-semibold text-white">Guide & Conseils</h2>
+              <p className="text-sm text-neutral-400">Bonnes pratiques et méthode FEFO</p>
+            </div>
+          </div>
+          <ChevronRight size={20} className="text-neutral-500" />
+        </Link>
       </section>
 
       {/* Déconnexion */}

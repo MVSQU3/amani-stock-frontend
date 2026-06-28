@@ -1,0 +1,27 @@
+{
+  "name": "Amani Stock",
+  "short_name": "Amani Stock",
+  "description": "Gestion de stock pour boutiques africaines — suivi FEFO, alertes péremption, scanner codes-barres et suivi financier.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0b",
+  "theme_color": "#f5a524",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "label": "Tableau de bord Amani Stock"
+    }
+  ]
+}

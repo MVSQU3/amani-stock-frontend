@@ -9,7 +9,9 @@ import { useAuthStore } from "../stores/useAuthStore";
  */
 export default function Login(): React.JSX.Element {
   const navigate = useNavigate();
+  const [loginMode, setLoginMode] = useState<"email" | "phone">("email");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   
   const { login, loading, error, clearError } = useAuthStore();
@@ -20,11 +22,13 @@ export default function Login(): React.JSX.Element {
   }, [clearError]);
 
   const submit = async () => {
-    if (!email.trim() || !password) {
+    if ((loginMode === "email" && !email.trim()) || (loginMode === "phone" && !phone.trim()) || !password) {
       return;
     }
     try {
-      await login(email.trim(), password);
+      const emailValue = loginMode === "email" ? email.trim() : "";
+      const phoneValue = loginMode === "phone" ? phone.trim() : "";
+      await login(emailValue, phoneValue, password);
       navigate("/scan", { replace: true });
     } catch (err) {
       // L'erreur est gérée par le store
@@ -49,20 +53,58 @@ export default function Login(): React.JSX.Element {
           </div>
         )}
 
+        {/* Onglets Email / Téléphone */}
+        <div className="mb-6 grid grid-cols-2 gap-1 rounded-xl bg-neutral-900 p-1">
+          <button
+            onClick={() => setLoginMode("email")}
+            className={`rounded-lg py-2 text-sm font-medium transition ${
+              loginMode === "email" ? "bg-neutral-800 text-white" : "text-neutral-400 hover:text-neutral-200"
+            }`}
+          >
+            Email
+          </button>
+          <button
+            onClick={() => setLoginMode("phone")}
+            className={`rounded-lg py-2 text-sm font-medium transition ${
+              loginMode === "phone" ? "bg-neutral-800 text-white" : "text-neutral-400 hover:text-neutral-200"
+            }`}
+          >
+            Téléphone
+          </button>
+        </div>
+
         <div className="space-y-4">
-          <label className="block">
-            <span className="mb-1 block text-xs uppercase tracking-wide text-neutral-500">
-              Email
-            </span>
-            <input
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && submit()}
-              className="input"
-            />
-          </label>
+          {loginMode === "email" ? (
+            <label className="block">
+              <span className="mb-1 block text-xs uppercase tracking-wide text-neutral-500">
+                Email
+              </span>
+              <input
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && submit()}
+                className="input"
+                placeholder="ex: bonin@exemple.com"
+              />
+            </label>
+          ) : (
+            <label className="block">
+              <span className="mb-1 block text-xs uppercase tracking-wide text-neutral-500">
+                Téléphone
+              </span>
+              <input
+                type="tel"
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && submit()}
+                className="input"
+                placeholder="ex: +225 01 02 03 04 05"
+              />
+            </label>
+          )}
           <label className="block">
             <span className="mb-1 block text-xs uppercase tracking-wide text-neutral-500">
               Mot de passe

@@ -1,0 +1,19 @@
+# robots.txt — Amani Stock
+# https://amani-stock.pro/
+
+User-agent: *
+
+# Pages publiques : autorisées
+Allow: /
+Allow: /login
+Allow: /register
+
+# Pages privées de l'application : ne pas indexer
+Disallow: /dashboard
+Disallow: /scan
+Disallow: /inventory
+Disallow: /alerts
+Disallow: /settings
+
+# Plan du site
+Sitemap: https://amani-stock.pro/sitemap.xml

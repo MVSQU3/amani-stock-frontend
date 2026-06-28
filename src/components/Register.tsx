@@ -11,6 +11,7 @@ export default function Register(): React.JSX.Element {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [shopName, setShopName] = useState("");
   
@@ -22,11 +23,11 @@ export default function Register(): React.JSX.Element {
   }, [clearError]);
 
   const submit = async () => {
-    if (!name.trim() || !email.trim() || !password || !shopName.trim()) {
+    if (!name.trim() || !email.trim() || !phone.trim() || !password || !shopName.trim()) {
       return;
     }
     try {
-      await register(name.trim(), email.trim(), password, shopName.trim());
+      await register(name.trim(), email.trim(), phone.trim(), password, shopName.trim());
       
       setSuccess(true);
       setTimeout(() => {
@@ -97,6 +98,19 @@ export default function Register(): React.JSX.Element {
               onChange={(e) => setEmail(e.target.value)}
               className="input w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2.5 text-base outline-none focus:border-amber-500"
               placeholder="bonin@exemple.com"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-xs uppercase tracking-wide text-neutral-500">
+              Téléphone
+            </span>
+            <input
+              type="tel"
+              autoComplete="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="input w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2.5 text-base outline-none focus:border-amber-500"
+              placeholder="Ex: +225 01 02 03 04 05"
             />
           </label>
           <label className="block">

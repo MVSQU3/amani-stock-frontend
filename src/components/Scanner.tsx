@@ -72,6 +72,7 @@ export default function Scanner(): React.JSX.Element {
   const [isScanning, setIsScanning] = useState(false);
   const [manualMode, setManualMode] = useState(false);
   const [barcode, setBarcode] = useState("");
+  const [tempBarcode, setTempBarcode] = useState("");
   const [feedback, setFeedback] = useState<Feedback>(null);
   
   const { addStock, sellProduct, loading: submitting } = useScannerStore();
@@ -216,6 +217,7 @@ export default function Scanner(): React.JSX.Element {
 
   const resetAll = () => {
     setBarcode("");
+    setTempBarcode("");
     setName("");
     setQuantity("1");
     setExpirationDate("");
@@ -383,14 +385,18 @@ export default function Scanner(): React.JSX.Element {
                 <input
                   autoFocus
                   inputMode="numeric"
-                  value={barcode}
-                  onChange={(e) => setBarcode(e.target.value)}
+                  value={tempBarcode}
+                  onChange={(e) => setTempBarcode(e.target.value)}
                   placeholder="Ex : 3250390001234"
                   className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2.5 text-base outline-none focus:border-amber-500"
                 />
                 <button
-                  disabled={!barcode.trim()}
-                  onClick={() => setManualMode(false)}
+                  disabled={!tempBarcode.trim()}
+                  onClick={() => {
+                    setBarcode(tempBarcode);
+                    setManualMode(false);
+                    setFeedback(null);
+                  }}
                   className="w-full rounded-lg bg-amber-500 py-2.5 text-sm font-semibold text-neutral-950 disabled:opacity-40"
                 >
                   Valider le code

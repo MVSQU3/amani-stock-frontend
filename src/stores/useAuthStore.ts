@@ -12,10 +12,11 @@ export const useAuthStore = create<AuthState>((set) => {
     loading: false,
     error: null,
 
-    login: async (email, password) => {
+    login: async (email, phone, password) => {
       set({ loading: true, error: null });
       try {
-        const { data } = await axiosClient.post("/auth/login", { email, password });
+        const loginmode = email ? "email" : "phone";
+        const { data } = await axiosClient.post("/auth/login", { email, phone, password, loginmode });
         const token = data?.token ?? data?.data?.token;
         const user = data?.data?.user;
 
@@ -34,10 +35,10 @@ export const useAuthStore = create<AuthState>((set) => {
       }
     },
 
-    register: async (name, email, password, shopName) => {
+    register: async (name, email, phone, password, shopName) => {
       set({ loading: true, error: null });
       try {
-        await axiosClient.post("/auth/register", { name, email, password, shopName });
+        await axiosClient.post("/auth/register", { name, email, phone, password, shopName });
         set({ loading: false });
       } catch (err: any) {
         set({

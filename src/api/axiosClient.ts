@@ -26,17 +26,26 @@ axiosClient.interceptors.request.use((config) => {
     return config;
 });
 
-// --- Intercepteur de RÉPONSE : gestion centralisée du 401 --------------------
+// --- Intercepteur de RÉPONSE : gestion centralisée du 401 et 403 trial ------
 axiosClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem(TOKEN_KEY);
-            // Redirection dure : on évite les états zombies après expiration du token
             if (window.location.pathname !== "/login") {
                 window.location.href = "/login";
             }
         }
+
+        // Essai expiré : on stocke le flag pour que l'UI affiche l'écran de blocage
+        if (
+            error.response?.status === 403 &&
+            error.response?.data?.trialExpired === true
+        ) {
+            localStorage.setItem("amani_trial_expired", "true");
+            window.dispatchEvent(new Event("trial-expired"));
+        }
+
         return Promise.reject(error);
     },
 );

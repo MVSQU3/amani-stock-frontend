@@ -2,6 +2,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   role: string;
   shopId: string;
 }
@@ -12,8 +13,8 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
   
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, shopName: string) => Promise<void>;
+  login: (email: string, phone: string, password: string) => Promise<void>;
+  register: (name: string, email: string, phone: string, password: string, shopName: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
   // checkAuth: () => Promise<void>;

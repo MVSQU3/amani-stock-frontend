@@ -11,6 +11,8 @@ import {
   PackageX,
   ShoppingCart,
   Download,
+  Lightbulb,
+  X,
 } from "lucide-react";
 import FinanceTab from "./Finance";
 import { MiniStat, AlertTile } from "../utils/DashboardWidgets";
@@ -22,16 +24,62 @@ const fcfa = (n: number): string =>
 
 export default function Dashboard(): React.JSX.Element {
   const [mainTab, setMainTab] = useState<"stock" | "finance">("stock");
+  const [showWelcome, setShowWelcome] = useState(false);
   
   const { data, loading, error, loadDashboard } = useDashboardStore();
 
   useEffect(() => {
+    const hasSeenGuide = localStorage.getItem("hasSeenGuide");
+    if (!hasSeenGuide) {
+      setShowWelcome(true);
+    }
     loadDashboard();
   }, [loadDashboard]);
 
+  const closeWelcome = () => {
+    localStorage.setItem("hasSeenGuide", "true");
+    setShowWelcome(false);
+  };
+
   return (
     <div className="min-h-screen bg-neutral-950 px-4 py-5 text-neutral-100">
-      <div className="mx-auto w-full max-w-md">
+      
+      {/* Modal de bienvenue */}
+      {showWelcome && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-neutral-800 bg-neutral-900 p-6 shadow-2xl">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
+                <Lightbulb size={24} />
+              </div>
+              <button onClick={closeWelcome} className="p-1 text-neutral-500 hover:text-white">
+                <X size={20} />
+              </button>
+            </div>
+            <h2 className="mb-2 text-xl font-bold text-white">Bienvenue sur Amani Stock !</h2>
+            <p className="mb-6 text-sm leading-relaxed text-neutral-300">
+              Pour tirer le meilleur parti de l'application et éviter les erreurs d'inventaire, nous vous recommandons vivement de lire notre petit guide des bonnes pratiques.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={closeWelcome}
+                className="flex-1 rounded-xl bg-neutral-800 py-3 text-sm font-semibold text-white hover:bg-neutral-700"
+              >
+                Plus tard
+              </button>
+              <a
+                href="/guide"
+                onClick={closeWelcome}
+                className="flex-1 text-center rounded-xl bg-amber-500 py-3 text-sm font-semibold text-neutral-950 hover:bg-amber-400"
+              >
+                Lire le guide
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="mx-auto w-full max-w-md relative z-10">
         <div className="mb-4 flex items-center justify-between">
           <h1 className="text-lg font-semibold tracking-tight">
             Tableau de bord

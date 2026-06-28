@@ -6,6 +6,7 @@ import Scanner from "./components/Scanner";
 import Inventory from "./components/Inventory";
 import Alerts from "./components/Alerts";
 import Settings from "./components/Settings";
+import Guide from "./components/Guide";
 import ProtectedLayout from "./utils/ProtectedLayout";
 import Landing from "./components/landing/Landing";
 
@@ -32,6 +33,7 @@ export default function App(): React.JSX.Element {
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/guide" element={<Guide />} />
         </Route>
 
         {/* Inconnu -> accueil */}
