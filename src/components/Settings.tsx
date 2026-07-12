@@ -3,13 +3,15 @@ import { useAuthStore } from "../stores/useAuthStore";
 import { useSettingsStore } from "../stores/useSettingsStore";
 
 import { Link } from "react-router";
-import { Users, Store, LogOut, Plus, Shield, User, Trash2, HelpCircle, ChevronRight } from "lucide-react";
+import { Users, Store, LogOut, Plus, Shield, User, Trash2, HelpCircle, ChevronRight, LayoutDashboard } from "lucide-react";
 
 export default function Settings(): React.JSX.Element {
-  const { logout } = useAuthStore();
-  const { 
-    shop, user, team, loading, error, 
-    loadSettings, addMember, updateMember, manageMemberStatus 
+  const { logout, user: authUser } = useAuthStore();
+  const isAdmin = authUser?.role === "admin";
+
+  const {
+    shop, user, team, loading, error,
+    loadSettings, addMember, updateMember, manageMemberStatus
   } = useSettingsStore();
 
   // Formulaire d'ajout de membre
@@ -17,8 +19,10 @@ export default function Settings(): React.JSX.Element {
   const [newMember, setNewMember] = useState({ name: "", email: "", password: "", role: "employe" });
 
   useEffect(() => {
-    loadSettings();
-  }, [loadSettings]);
+    // GET /auth/settings est réservé à gerant/gestionnaire : un admin (super-admin
+    // plateforme, pas rattaché à la gestion d'équipe) n'y a pas accès et n'en a pas besoin.
+    if (!isAdmin) loadSettings();
+  }, [loadSettings, isAdmin]);
 
   const handleLogout = () => {
     logout();
@@ -55,7 +59,7 @@ export default function Settings(): React.JSX.Element {
     }
   };
 
-  if (loading) return <div className="p-4 text-center text-neutral-400">Chargement...</div>;
+  if (!isAdmin && loading) return <div className="p-4 text-center text-neutral-400">Chargement...</div>;
 
   const isManager = user?.role === "gerant" || user?.role === "gestionnaire";
 
@@ -63,13 +67,32 @@ export default function Settings(): React.JSX.Element {
     <div className="p-4 pb-24">
       <h1 className="mb-6 text-2xl font-bold tracking-tight text-white">Paramètres</h1>
 
-      {error && (
+      {error && !isAdmin && (
         <div className="mb-6 rounded-lg bg-red-500/10 p-3 text-sm text-red-400 border border-red-500/20">
           {error}
         </div>
       )}
 
+      {/* Compte (super-admin : pas de boutique/équipe à gérer, juste son compte) */}
+      {isAdmin && (
+        <section className="mb-8 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400">
+              <Shield size={20} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-white">{authUser?.name}</h2>
+              <p className="text-sm text-neutral-400">{authUser?.email}</p>
+            </div>
+          </div>
+          <div className="mt-3 inline-flex items-center rounded-full bg-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-300">
+            Super-admin plateforme
+          </div>
+        </section>
+      )}
+
       {/* Section Boutique */}
+      {!isAdmin && (
       <section className="mb-8 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500">
@@ -94,8 +117,10 @@ export default function Settings(): React.JSX.Element {
           </div>
         </div>
       </section>
+      )}
 
       {/* Section Équipe */}
+      {!isAdmin && (
       <section className="mb-8 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -108,7 +133,7 @@ export default function Settings(): React.JSX.Element {
             </div>
           </div>
           {isManager && (
-            <button 
+            <button
               onClick={() => setShowAddForm(!showAddForm)}
               className="flex items-center gap-1 rounded-lg bg-neutral-800 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-700"
             >
@@ -179,10 +204,10 @@ export default function Settings(): React.JSX.Element {
                   <div className="text-xs text-neutral-500">{member.email}</div>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 {isManager && member.role !== 'gerant' && member.id !== user?.id ? (
-                  <select 
+                  <select
                     value={member.role}
                     onChange={(e) => handleUpdateRole(member.id, e.target.value)}
                     className="rounded-md border border-neutral-700 bg-neutral-900 px-2 py-1 text-xs text-neutral-300 outline-none"
@@ -204,10 +229,32 @@ export default function Settings(): React.JSX.Element {
           ))}
         </div>
       </section>
+      )}
+
+      {/* Administration (super-admin plateforme uniquement) */}
+      {isAdmin && (
+        <section className="mb-8">
+          <Link
+            to="/admin"
+            className="flex w-full items-center justify-between rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 transition hover:bg-neutral-800"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400">
+                <LayoutDashboard size={20} />
+              </div>
+              <div className="text-left">
+                <h2 className="text-lg font-semibold text-white">Administration</h2>
+                <p className="text-sm text-neutral-400">Gérer toutes les boutiques</p>
+              </div>
+            </div>
+            <ChevronRight size={20} className="text-neutral-500" />
+          </Link>
+        </section>
+      )}
 
       {/* Guide & Aide */}
       <section className="mb-8">
-        <Link 
+        <Link
           to="/guide"
           className="flex w-full items-center justify-between rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 transition hover:bg-neutral-800"
         >

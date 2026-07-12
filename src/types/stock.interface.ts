@@ -2,6 +2,14 @@
 /*  Types calés sur les réponses RÉELLES du backend Amani Stock                 */
 /* -------------------------------------------------------------------------- */
 
+/** Classification réglementaire pharmaceutique d'un produit. */
+export type RegulatoryCategory =
+  | "libre"
+  | "ordonnance"
+  | "tableau_a"
+  | "tableau_b"
+  | "stupefiant";
+
 /** Mode d'utilisation du scanner : entrée d'arrivage ou sortie/vente. */
 export type AppMode = "add" | "sell";
 
@@ -23,6 +31,7 @@ export interface Product {
   category: string | null;
   unit: string;
   minThreshold: number;
+  regulatoryCategory: RegulatoryCategory;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,16 +50,27 @@ export interface StockBatch {
   purchasePrice: string;
   sellPrice: string | null;
   expirationDate: string;
+  lotNumber: string | null;
+  supplierId: string | null;
   daysRemaining: number; // négatif si le lot est périmé
   createdAt: string;
   updatedAt: string;
   // Sous-ensemble du produit renvoyé par les routes d'inventaire/alertes
   Product?: Pick<
     Product,
-    "id" | "name" | "barcode" | "category" | "unit"
+    "id" | "name" | "barcode" | "category" | "unit" | "regulatoryCategory"
   > & {
     minThreshold?: number;
   };
+  Supplier?: { id: string; name: string; phone: string | null } | null;
+}
+
+/** Fournisseur/grossiste (traçabilité amont d'un lot). */
+export interface Supplier {
+  id: string;
+  name: string;
+  phone: string | null;
+  address: string | null;
 }
 
 /** Statut d'urgence calculé par le backend pour la coloration. */
@@ -86,6 +106,9 @@ export interface AddStockPayload {
   purchasePrice?: number;
   sellPrice?: number;
   minThreshold?: number;
+  lotNumber?: string;
+  supplierName?: string;
+  regulatoryCategory?: RegulatoryCategory;
 }
 
 /** Corps de POST /stock/sell. */
@@ -117,4 +140,5 @@ export interface AlertsState {
   loading: boolean;
   error: string;
   loadAlerts: () => Promise<void>;
+  disposeBatch: (batchId: string, quantity: number) => Promise<void>;
 }

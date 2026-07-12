@@ -7,8 +7,10 @@ import Inventory from "./components/Inventory";
 import Alerts from "./components/Alerts";
 import Settings from "./components/Settings";
 import Guide from "./components/Guide";
+import Admin from "./components/admin/Admin";
 import ProtectedLayout from "./utils/ProtectedLayout";
 import Landing from "./components/landing/Landing";
+import RoleGuard from "./components/RoleGuard";
 
 /**
  * Point d'entrée de l'application.
@@ -34,6 +36,14 @@ export default function App(): React.JSX.Element {
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/guide" element={<Guide />} />
+          <Route
+            path="/admin"
+            element={
+              <RoleGuard allowed="admin" fallback={<Navigate to="/dashboard" replace />}>
+                <Admin />
+              </RoleGuard>
+            }
+          />
         </Route>
 
         {/* Inconnu -> accueil */}

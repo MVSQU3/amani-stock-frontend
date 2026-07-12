@@ -9,9 +9,14 @@ import {
   Pencil,
   Loader2,
 } from "lucide-react";
-import type { StockBatch } from "../types/stock.interface";
+import type { RegulatoryCategory, StockBatch } from "../types/stock.interface";
 import { useInventoryStore } from "../stores/useInventoryStore";
 import type { Movement } from "../types/inventory.interface";
+import {
+  REGULATORY_CATEGORIES,
+  regulatoryAccent,
+  regulatoryLabel,
+} from "./regulatory";
 
 
 
@@ -132,6 +137,11 @@ export function EditForm({
   const [name, setName] = useState(batch.Product?.name || "");
   const [barcode, setBarcode] = useState(batch.Product?.barcode || "");
   const [expirationDate, setExpirationDate] = useState(batch.expirationDate || "");
+  const [lotNumber, setLotNumber] = useState(batch.lotNumber || "");
+  const [supplierName, setSupplierName] = useState(batch.Supplier?.name || "");
+  const [regulatoryCategory, setRegulatoryCategory] = useState<RegulatoryCategory>(
+    batch.Product?.regulatoryCategory || "libre",
+  );
   const [quantity, setQuantity] = useState(String(batch.quantity));
   const [submitting, setSubmitting] = useState(false);
   const [err, setErr] = useState("");
@@ -156,6 +166,9 @@ export function EditForm({
         name,
         barcode,
         expirationDate,
+        lotNumber,
+        supplierName,
+        regulatoryCategory,
         quantity: qty,
       });
       onDone();
@@ -195,6 +208,31 @@ export function EditForm({
           placeholder="Code-barres"
           className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm outline-none focus:border-sky-500"
         />
+        <input
+          type="text"
+          value={lotNumber}
+          onChange={(e) => setLotNumber(e.target.value)}
+          placeholder="N° de lot"
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm outline-none focus:border-sky-500"
+        />
+        <input
+          type="text"
+          value={supplierName}
+          onChange={(e) => setSupplierName(e.target.value)}
+          placeholder="Fournisseur"
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm outline-none focus:border-sky-500"
+        />
+        <select
+          value={regulatoryCategory}
+          onChange={(e) => setRegulatoryCategory(e.target.value as RegulatoryCategory)}
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100 outline-none focus:border-sky-500"
+        >
+          {REGULATORY_CATEGORIES.map((c) => (
+            <option key={c.value} value={c.value}>
+              {c.label}
+            </option>
+          ))}
+        </select>
         <div className="flex items-center gap-2">
           <input
             type="date"
@@ -256,14 +294,25 @@ export function StockList({
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="truncate font-medium text-neutral-100">
-                {b.Product?.name ?? "Produit"}
-              </p>
+              <div className="flex items-center gap-1.5">
+                <p className="truncate font-medium text-neutral-100">
+                  {b.Product?.name ?? "Produit"}
+                </p>
+                {b.Product?.regulatoryCategory &&
+                  b.Product.regulatoryCategory !== "libre" && (
+                    <span
+                      className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium ${regulatoryAccent(b.Product.regulatoryCategory)}`}
+                    >
+                      {regulatoryLabel(b.Product.regulatoryCategory)}
+                    </span>
+                  )}
+              </div>
               <p className="mt-0.5 font-mono text-xs text-neutral-500">
                 {b.Product?.barcode}
               </p>
               <p className="mt-0.5 font-mono text-[10px] text-neutral-600">
-                Lot {b.id?.slice(0, 8).toUpperCase()}
+                Lot {b.lotNumber || b.id?.slice(0, 8).toUpperCase()}
+                {b.Supplier?.name ? ` · ${b.Supplier.name}` : ""}
               </p>
             </div>
             <div className="flex items-center gap-2 text-sm text-neutral-300">

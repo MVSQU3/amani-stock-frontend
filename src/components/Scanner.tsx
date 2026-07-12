@@ -14,9 +14,11 @@ import {
 import type {
   AppMode,
   AddStockPayload,
+  RegulatoryCategory,
 } from "../types/stock.interface";
 import Field from "../utils/FieldWrapper";
 import { useScannerStore } from "../stores/useScannerStore";
+import { REGULATORY_CATEGORIES } from "../utils/regulatory";
 
 const READER_ID = "qr-reader";
 
@@ -81,6 +83,10 @@ export default function Scanner(): React.JSX.Element {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("1");
   const [expirationDate, setExpirationDate] = useState(""); // yyyy-mm-dd
+  const [lotNumber, setLotNumber] = useState("");
+  const [supplierName, setSupplierName] = useState("");
+  const [regulatoryCategory, setRegulatoryCategory] =
+    useState<RegulatoryCategory>("libre");
   const [category, setCategory] = useState("");
   const [unit, setUnit] = useState("pièce");
   const [purchasePrice, setPurchasePrice] = useState("");
@@ -221,6 +227,9 @@ export default function Scanner(): React.JSX.Element {
     setName("");
     setQuantity("1");
     setExpirationDate("");
+    setLotNumber("");
+    setSupplierName("");
+    setRegulatoryCategory("libre");
     setCategory("");
     setUnit("pièce");
     setPurchasePrice("");
@@ -254,6 +263,9 @@ export default function Scanner(): React.JSX.Element {
         name: name.trim() || undefined,
         quantity: qty,
         expirationDate: toApiDate(expirationDate),
+        lotNumber: lotNumber.trim() || undefined,
+        supplierName: supplierName.trim() || undefined,
+        regulatoryCategory,
         category: category.trim() || undefined,
         unit: unit.trim() || undefined,
         purchasePrice: purchasePrice ? parseFloat(purchasePrice) : undefined,
@@ -524,14 +536,49 @@ export default function Scanner(): React.JSX.Element {
                     />
                   </Field>
                 </div>
-                <Field label="Catégorie">
-                  <input
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    placeholder="Ex : Médicaments"
-                    className="input"
-                  />
-                </Field>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Catégorie">
+                    <input
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      placeholder="Ex : Médicaments"
+                      className="input"
+                    />
+                  </Field>
+                  <Field label="N° de lot">
+                    <input
+                      value={lotNumber}
+                      onChange={(e) => setLotNumber(e.target.value)}
+                      placeholder="Ex : L2026-0472"
+                      className="input"
+                    />
+                  </Field>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Fournisseur">
+                    <input
+                      value={supplierName}
+                      onChange={(e) => setSupplierName(e.target.value)}
+                      placeholder="Ex : Laborex CI"
+                      className="input"
+                    />
+                  </Field>
+                  <Field label="Classification">
+                    <select
+                      value={regulatoryCategory}
+                      onChange={(e) =>
+                        setRegulatoryCategory(e.target.value as RegulatoryCategory)
+                      }
+                      className="input"
+                    >
+                      {REGULATORY_CATEGORIES.map((c) => (
+                        <option key={c.value} value={c.value}>
+                          {c.label}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                </div>
                 <button
                   onClick={submitAdd}
                   disabled={submitting}

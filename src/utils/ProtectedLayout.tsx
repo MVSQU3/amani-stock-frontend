@@ -10,7 +10,7 @@ import TrialExpired from "../components/TrialExpired";
  * Le padding-bottom évite que le contenu passe sous la barre fixe.
  */
 export default function ProtectedLayout(): React.JSX.Element {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
 
   // Détecte l'expiration de l'essai (flag localStorage ou événement axios)
   const [trialExpired, setTrialExpired] = useState(
@@ -28,7 +28,7 @@ export default function ProtectedLayout(): React.JSX.Element {
   }
 
   if (trialExpired) {
-    return <TrialExpired />;
+    return <TrialExpired shopName={user?.name || ""} shopId={user?.id || ""} />;
   }
 
   return (

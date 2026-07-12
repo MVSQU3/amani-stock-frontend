@@ -1,9 +1,11 @@
-import { CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import { CheckCircle2, Trash2, Loader2 } from "lucide-react";
 import type {
   ExpirationAlert,
   ExpirationStatus,
   LowStockItem,
 } from "../types/stock.interface";
+import { useAlertsStore } from "../stores/useAlertsStore";
 
 // Échelle de chaleur : ambre (bientôt) -> orange (critique) -> rouge (périmé).
 export const HEAT: Record<
@@ -46,6 +48,61 @@ export function Empty({ label }: { label: string }) {
   );
 }
 
+/* ------------------------- Bouton de mise au rebut ------------------------ */
+function DisposeButton({ batch }: { batch: ExpirationAlert }) {
+  const [confirming, setConfirming] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [err, setErr] = useState("");
+  const disposeBatch = useAlertsStore((s) => s.disposeBatch);
+
+  if (!confirming) {
+    return (
+      <button
+        onClick={() => setConfirming(true)}
+        className="flex items-center gap-1 rounded-md bg-red-950/60 px-2 py-1 text-xs font-medium text-red-300 hover:bg-red-900/60"
+      >
+        <Trash2 size={12} /> Mettre au rebut
+      </button>
+    );
+  }
+
+  const confirm = async () => {
+    setSubmitting(true);
+    setErr("");
+    try {
+      await disposeBatch(batch.id, batch.quantity);
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || "Échec de la mise au rebut.");
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-end gap-1">
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-neutral-400">
+          Détruire les {batch.quantity} unités ?
+        </span>
+        <button
+          onClick={confirm}
+          disabled={submitting}
+          className="rounded-md bg-red-600 px-2 py-1 text-xs font-semibold text-neutral-100 disabled:opacity-50"
+        >
+          {submitting ? <Loader2 size={12} className="animate-spin" /> : "Confirmer"}
+        </button>
+        <button
+          onClick={() => setConfirming(false)}
+          disabled={submitting}
+          className="rounded-md px-2 py-1 text-xs text-neutral-400 hover:text-neutral-200"
+        >
+          Annuler
+        </button>
+      </div>
+      {err && <span className="text-xs text-red-400">{err}</span>}
+    </div>
+  );
+}
+
 /* ----------------------------- Liste péremption --------------------------- */
 export function ExpirationList({ items }: { items: ExpirationAlert[] }) {
   if (!items.length)
@@ -81,6 +138,11 @@ export function ExpirationList({ items }: { items: ExpirationAlert[] }) {
                 {b.quantity} {b.Product?.unit ?? ""} · exp. {b.expirationDate}
               </span>
             </div>
+            {b.status === "expired" && (
+              <div className="mt-2.5 flex justify-end border-t border-neutral-800 pt-2.5">
+                <DisposeButton batch={b} />
+              </div>
+            )}
           </li>
         );
       })}

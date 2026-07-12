@@ -4,11 +4,27 @@ import type { AlertsState, ApiResponse, ExpirationAlert, LowStockItem } from "..
 
 
 
-export const useAlertsStore = create<AlertsState>((set) => ({
+export const useAlertsStore = create<AlertsState>((set, get) => ({
   expiration: [],
   lowStock: [],
   loading: true,
   error: "",
+
+  disposeBatch: async (batchId: string, quantity: number) => {
+    await axiosClient.post("/stock/loss", {
+      batchId,
+      quantity,
+      reason: "Périmé",
+    });
+    // Retire (ou réduit) le lot localement sans recharger tout l'écran
+    set({
+      expiration: get()
+        .expiration.map((b) =>
+          b.id === batchId ? { ...b, quantity: b.quantity - quantity } : b,
+        )
+        .filter((b) => b.quantity > 0),
+    });
+  },
 
   loadAlerts: async () => {
     set({ loading: true, error: "" });
