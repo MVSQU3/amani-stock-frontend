@@ -3,6 +3,7 @@ import { axiosClient } from "./axiosClient";
 export interface ShopInfo {
   id: string;
   name: string;
+  type: string;
   notificationEmail?: string;
   createdAt: string;
 }

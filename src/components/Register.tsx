@@ -14,6 +14,7 @@ export default function Register(): React.JSX.Element {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [shopName, setShopName] = useState("");
+  const [type, setType] = useState<"pharmacie" | "supermarche" | "autres">("pharmacie");
   
   const { register, loading, error, clearError } = useAuthStore();
   const [success, setSuccess] = useState(false);
@@ -23,11 +24,11 @@ export default function Register(): React.JSX.Element {
   }, [clearError]);
 
   const submit = async () => {
-    if (!name.trim() || !email.trim() || !phone.trim() || !password || !shopName.trim()) {
+    if (!name.trim() || !email.trim() || !phone.trim() || !password || !shopName.trim() || !type.trim()) {
       return;
     }
     try {
-      await register(name.trim(), email.trim(), phone.trim(), password, shopName.trim());
+      await register(name.trim(), email.trim(), phone.trim(), password, shopName.trim(), type);
       
       setSuccess(true);
       setTimeout(() => {
@@ -86,6 +87,22 @@ export default function Register(): React.JSX.Element {
               className="input w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2.5 text-base outline-none focus:border-amber-500"
               placeholder="Ex: Pharmacie du Monde"
             />
+          </label>
+          <label className="block">
+            <span className="mb-1 block text-xs uppercase tracking-wide text-neutral-500">
+              Type de boutique
+            </span>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value as "pharmacie" | "supermarche" | "autres")}
+              onKeyDown={(e) => e.key === "Enter" && submit()}
+              required
+              className="input w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2.5 text-base outline-none focus:border-amber-500"
+            >
+              <option value="pharmacie">Pharmacie</option>
+              <option value="supermarche">Supermarché</option>
+              <option value="autres">Autres</option>
+            </select>
           </label>
           <label className="block">
             <span className="mb-1 block text-xs uppercase tracking-wide text-neutral-500">

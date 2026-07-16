@@ -35,10 +35,10 @@ export const useAuthStore = create<AuthState>((set) => {
       }
     },
 
-    register: async (name, email, phone, password, shopName) => {
+    register: async (name, email, phone, password, shopName, type) => {
       set({ loading: true, error: null });
       try {
-        await axiosClient.post("/auth/register", { name, email, phone, password, shopName });
+        await axiosClient.post("/auth/register", { name, email, phone, password, shopName, type });
         set({ loading: false });
       } catch (err: any) {
         set({
