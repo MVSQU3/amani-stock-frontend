@@ -99,7 +99,7 @@ export default function Settings(): React.JSX.Element {
             <Store size={20} />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white"> {shop?.type !== "Autre" ? shop?.type.toLocaleUpperCase() : "Boutique"} </h2>
+            <h2 className="text-lg font-semibold text-white"> {shop?.type && shop?.type !== "Autres" ? shop?.type.toLocaleUpperCase() : "Boutique"} </h2>
             <p className="text-sm text-neutral-400">Informations générales</p>
           </div>
         </div>
